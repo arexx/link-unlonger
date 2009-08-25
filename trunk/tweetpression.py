@@ -4,6 +4,7 @@
 #
 
 from compulsion import Url
+from unicoder import unicodise
 
 LITTLE = True
 BIG = False
@@ -70,9 +71,16 @@ def test_url(testurl):
     print "Bit compression ratio:       ", "%.02f%%" % ((len(fivebitseq) * 5.0) / (len(url) * 8) * 100)
     urlnum = BasedNumber(digits=fivebitseq, base=2**5)
     print "URL, 5-bit, decimal:         ", urlnum
-    b20000seq = urlnum.radix(20000)
-    print "URL, 5-bit, base 20000:      ", b20000seq
-    print "Char compression ratio:      ", "%.02f%%" % ((len(b20000seq) * 1.0) / (len(url)) * 100)
+    b40336seq = urlnum.radix(40336)
+    print "URL, 5-bit, base 40336:      ", b40336seq
+    tweetpression = "".join([unichr(unicodise(x)) for x in b40336seq])
+    print "Tweetpressed:                ", tweetpression
+    ratio = ((len(b40336seq) * 1.0) / (len(url)) * 100)
+    print "Char compression ratio:      ", "%.02f%%" % ratio
+    print
+    print "INPUT:  %s (%d characters)" % (url, len(url))
+    print "OUTPUT: %s (%d characters, %.02f%% of the size)" % (tweetpression, len(tweetpression), ratio)
+    print
     print
 
 onethousand = BasedNumber(1000)
@@ -90,7 +98,8 @@ print
 helloworld = BasedNumber.from_7bit_string("Hello, world!")
 print "Hello, world!                ", helloworld
 print "Hello, world!, base 128:     ", helloworld.radix(128)
-print "Hello, world!, base 20000:   ", helloworld.radix(20000)
+print "Hello, world!, base 40336:   ", helloworld.radix(40336)
+print "Hello, world!, tweetpressed: ", "".join([unichr(unicodise(x)) for x in helloworld.radix(40336)])
 print
 
 print "A short URL with very low entropy."
